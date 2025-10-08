@@ -10,51 +10,193 @@
       --bg:#0f1724; --card:#0b1320; --muted:#94a3b8; --accent1:#7c3aed; --accent2:#06b6d4; --glass: rgba(255,255,255,0.03);
       --glass-2: rgba(255,255,255,0.02);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:linear-gradient(180deg,#061021 0%, #07122a 50%, #08132f 100%);height:auto}
-    .app{max-width:1100px;margin:40px auto;padding:28px;border-radius:16px;background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.6);backdrop-filter: blur(8px);}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;align-items:center;gap:14px}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:20px;box-shadow:0 6px 18px rgba(124,58,237,0.18), inset 0 -6px 24px rgba(0,0,0,0.18)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      color:#e6eef8;
+      background:linear-gradient(180deg,#061021 0%, #07122a 50%, #08132f 100%);
+      overflow-x:hidden;
+    }
+    .app{
+      max-width:1100px;
+      margin:40px auto;
+      padding:28px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow:0 10px 30px rgba(2,6,23,0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap; /* ✅ permite quebrar no mobile */
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      width:56px;height:56px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;color:white;font-size:20px;
+      box-shadow:0 6px 18px rgba(124,58,237,0.18), inset 0 -6px 24px rgba(0,0,0,0.18)
+    }
     h1{margin:0;font-size:20px}
     p.lead{margin:0;color:var(--muted);font-size:13px}
 
-    .controls{display:flex;gap:12px;align-items:center}
-    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
-    .btn-add{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;box-shadow:0 8px 24px rgba(7,9,30,0.6)}
-    .btn-export{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+    .controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap; /* ✅ adapta botões no mobile */
+      justify-content:flex-end;
+    }
+    .btn{
+      padding:10px 14px;
+      border-radius:10px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      transition: all .25s ease;
+    }
+    .btn:hover{opacity:0.9;transform:translateY(-1px)}
+    .btn-add{
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      color:white;
+      box-shadow:0 8px 24px rgba(7,9,30,0.6)
+    }
+    .btn-export{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.04)
+    }
 
-    .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:20px}
-    @media(min-width:920px){.grid{grid-template-columns:1fr 360px}}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:20px;
+    }
+
+    /* ✅ Desktop layout */
+    @media(min-width:920px){
+      .grid{grid-template-columns:1fr 360px;}
+    }
+
+    /* ✅ Ajustes em telas pequenas */
+    @media(max-width:600px){
+      .app{padding:18px;margin:20px;}
+      .logo{width:48px;height:48px;font-size:18px;}
+      h1{font-size:18px;}
+      p.lead{font-size:12px;}
+      .btn{width:100%;text-align:center;}
+      .controls{flex-direction:column;align-items:stretch;}
+      .summary .row{flex-direction:column;align-items:flex-start;gap:4px;}
+      .field label{font-size:11px;}
+      .field input{padding:6px 8px;}
+    }
 
     .tasks{display:flex;flex-direction:column;gap:12px}
-    .task-card{background:linear-gradient(180deg,var(--glass),var(--glass-2));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:flex-start}
+    .task-card{
+      background:linear-gradient(180deg,var(--glass),var(--glass-2));
+      padding:14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
     .task-left{flex:1}
-    .task-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .task-name{font-weight:700;font-size:15px;color:#fff;outline:none}
-    .task-meta{display:flex;gap:8px;align-items:center}
+    .task-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .task-name{
+      font-weight:700;
+      font-size:15px;
+      color:#fff;
+      outline:none;
+      word-break:break-word;
+    }
 
     .inputs{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
     .field{min-width:120px;flex:1}
-    .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
-    .field input{width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eaf4ff}
+    .field label{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px
+    }
+    .field input{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:transparent;
+      color:#eaf4ff
+    }
 
-    .results{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
-    .chip{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);min-width:150px}
+    .results{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      background:rgba(255,255,255,0.03);
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      min-width:150px
+    }
     .chip b{display:block;font-size:14px}
     .chip small{color:var(--muted);font-size:12px}
 
-    .sidebar{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .sidebar{
+      padding:14px;
+      border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+    }
     .summary{display:flex;flex-direction:column;gap:10px}
     .summary .row{display:flex;justify-content:space-between;align-items:center}
     .muted{color:var(--muted);font-size:13px}
 
-    .actions{display:flex;gap:8px;margin-top:8px}
-    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:8px}
+    .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+    .btn-ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:8px;
+      transition:all .25s ease;
+    }
+    .btn-ghost:hover{background:rgba(255,255,255,0.03)}
 
-    .empty{color:var(--muted);padding:30px;border-radius:10px;text-align:center}
+    .empty{
+      color:var(--muted);
+      padding:30px;
+      border-radius:10px;
+      text-align:center
+    }
 
-    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+    footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center
+    }
 
     .icon{-webkit-user-select:none;-moz-user-select:none;user-select:none}
   </style>
@@ -256,4 +398,3 @@
   </script>
 </body>
 </html>
-
