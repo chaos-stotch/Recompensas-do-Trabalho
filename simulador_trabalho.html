@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recompensas do Trabalho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1320; --muted:#94a3b8; --accent1:#7c3aed; --accent2:#06b6d4; --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:linear-gradient(180deg,#061021 0%, #07122a 50%, #08132f 100%);height:auto}
+    .app{max-width:1100px;margin:40px auto;padding:28px;border-radius:16px;background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.6);backdrop-filter: blur(8px);}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:20px;box-shadow:0 6px 18px rgba(124,58,237,0.18), inset 0 -6px 24px rgba(0,0,0,0.18)}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:12px;align-items:center}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+    .btn-add{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;box-shadow:0 8px 24px rgba(7,9,30,0.6)}
+    .btn-export{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:20px}
+    @media(min-width:920px){.grid{grid-template-columns:1fr 360px}}
+
+    .tasks{display:flex;flex-direction:column;gap:12px}
+    .task-card{background:linear-gradient(180deg,var(--glass),var(--glass-2));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:flex-start}
+    .task-left{flex:1}
+    .task-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .task-name{font-weight:700;font-size:15px;color:#fff;outline:none}
+    .task-meta{display:flex;gap:8px;align-items:center}
+
+    .inputs{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .field{min-width:120px;flex:1}
+    .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+    .field input{width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eaf4ff}
+
+    .results{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+    .chip{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);min-width:150px}
+    .chip b{display:block;font-size:14px}
+    .chip small{color:var(--muted);font-size:12px}
+
+    .sidebar{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .summary{display:flex;flex-direction:column;gap:10px}
+    .summary .row{display:flex;justify-content:space-between;align-items:center}
+    .muted{color:var(--muted);font-size:13px}
+
+    .actions{display:flex;gap:8px;margin-top:8px}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:8px}
+
+    .empty{color:var(--muted);padding:30px;border-radius:10px;text-align:center}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+    .icon{-webkit-user-select:none;-moz-user-select:none;user-select:none}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">☕</div>
+        <div>
+          <h1>Recompensas do Trabalho</h1>
+          <p class="lead">Ora et labora</p>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="addTask" class="btn btn-add">➕ Adicionar tarefa</button>
+        <button id="exportJson" class="btn btn-export">Exportar JSON</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section>
+        <div id="tasks" class="tasks">
+          <div class="empty" id="empty">Nenhuma tarefa. Clique em "Adicionar tarefa" para começar.</div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <h3 style="margin:0">Resumo</h3>
+        <p class="muted" style="margin:0 0 12px 0">Soma dos valores atuais de todas as tarefas.</p>
+        <div class="summary">
+          <div class="row"><div class="muted">Total Geral</div><div id="totalAll">0,00</div></div>
+          <div class="row"><div class="muted">Cafés (400)</div><div id="totalCoffees">0</div></div>
+          <div class="row"><div class="muted">Boliche (140.000)</div><div id="totalBowling">0</div></div>
+        </div>
+        <div class="actions">
+          <button id="clearAll" class="btn-ghost">Limpar tudo</button>
+          <button id="loadDemo" class="btn-ghost">Carregar demo</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Helper: calcula o mesmo que a função Python
+    function computeAmount(salary, multiplier, hours){
+      salary = Number(salary);
+      multiplier = Number(multiplier);
+      hours = Math.max(0, Math.floor(Number(hours) || 0));
+
+      let amount = 0;
+      let hourSalary = 0;
+      for(let c=0;c<hours;c++){
+        if(amount === 0){
+          hourSalary = salary;
+        } else {
+          hourSalary = salary + (amount * multiplier);
+        }
+        amount += hourSalary;
+        // guard against runaway numbers
+        if(!isFinite(amount) || amount > 1e18) { amount = Number.POSITIVE_INFINITY; break; }
+      }
+      return { amount, hourSalary };
+    }
+
+    function fmt(v){
+      if(!isFinite(v)) return "∞";
+      return v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    const tasksEl = document.getElementById('tasks');
+    const emptyEl = document.getElementById('empty');
+    const totalAll = document.getElementById('totalAll');
+    const totalCoffees = document.getElementById('totalCoffees');
+    const totalBowling = document.getElementById('totalBowling');
+
+    let tasks = [];
+
+    function save(){
+      try{ localStorage.setItem('work-sim-tasks', JSON.stringify(tasks)); }catch(e){}
+    }
+    function load(){
+      try{ const raw = localStorage.getItem('work-sim-tasks'); if(raw) tasks = JSON.parse(raw); }catch(e){}
+    }
+
+    function render(){
+      tasksEl.innerHTML = '';
+      if(tasks.length === 0){ tasksEl.appendChild(emptyEl); } else { if(emptyEl.parentNode) emptyEl.parentNode.removeChild(emptyEl); }
+
+      let grand = 0;
+      tasks.forEach((t, idx)=>{
+        const card = document.createElement('div'); card.className = 'task-card';
+
+        const left = document.createElement('div'); left.className='task-left';
+        const header = document.createElement('div'); header.className='task-header';
+
+        const name = document.createElement('div'); name.className='task-name'; name.contentEditable = true; name.innerText = t.name || 'Tarefa sem nome';
+        name.addEventListener('input', e=>{ tasks[idx].name = name.innerText; save(); });
+
+        const meta = document.createElement('div'); meta.className='task-meta';
+        const removeBtn = document.createElement('button'); removeBtn.className='btn-ghost'; removeBtn.innerText='Remover';
+        removeBtn.addEventListener('click', ()=>{ tasks.splice(idx,1); save(); render(); });
+
+        meta.appendChild(removeBtn);
+        header.appendChild(name); header.appendChild(meta);
+        left.appendChild(header);
+
+        const inputs = document.createElement('div'); inputs.className='inputs';
+
+        // salary
+        const fSalary = document.createElement('div'); fSalary.className='field';
+        fSalary.innerHTML = `<label>Salário base por hora</label><input type='number' step='1' value='${t.salary}' />`;
+        const inSalary = fSalary.querySelector('input');
+        inSalary.addEventListener('input', ()=>{ tasks[idx].salary = Number(inSalary.value || 0); recalc(idx, card); save(); });
+
+        // multiplier
+        const fMult = document.createElement('div'); fMult.className='field';
+        fMult.innerHTML = `<label>Multiplicador (ex: 0.05)</label><input type='number' step='0.0001' value='${t.multiplier}' />`;
+        const inMult = fMult.querySelector('input');
+        inMult.addEventListener('input', ()=>{ tasks[idx].multiplier = Number(inMult.value || 0); recalc(idx, card); save(); });
+
+        // hours
+        const fHours = document.createElement('div'); fHours.className='field';
+        fHours.innerHTML = `<label>Horas trabalhadas</label><input type='number' step='1' value='${t.hours}' />`;
+        const inHours = fHours.querySelector('input');
+        inHours.addEventListener('input', ()=>{ tasks[idx].hours = Number(inHours.value || 0); recalc(idx, card); save(); });
+
+        inputs.appendChild(fSalary); inputs.appendChild(fMult); inputs.appendChild(fHours);
+        left.appendChild(inputs);
+
+        // results
+        const results = document.createElement('div'); results.className='results';
+        const chipAmount = document.createElement('div'); chipAmount.className='chip';
+        const chipLast = document.createElement('div'); chipLast.className='chip';
+
+        results.appendChild(chipAmount); results.appendChild(chipLast);
+        left.appendChild(results);
+
+        // action row
+        const actions = document.createElement('div'); actions.style.marginTop = '10px';
+        const duplicate = document.createElement('button'); duplicate.className='btn-ghost'; duplicate.innerText='Duplicar';
+        duplicate.addEventListener('click', ()=>{ tasks.splice(idx+1,0,JSON.parse(JSON.stringify(tasks[idx]))); save(); render(); });
+        actions.appendChild(duplicate);
+        left.appendChild(actions);
+
+        card.appendChild(left);
+        tasksEl.appendChild(card);
+
+        // initial calc for this card
+        recalc(idx, card, true);
+      });
+
+      // update sidebar totals
+      tasks.forEach(t=>{ const c = computeAmount(t.salary, t.multiplier, t.hours); if(isFinite(c.amount)) grand += c.amount; else grand = Infinity; });
+      totalAll.innerText = (grand===Infinity) ? '∞' : fmt(grand);
+      totalCoffees.innerText = (grand===Infinity) ? '∞' : (grand/400).toFixed(2);
+      totalBowling.innerText = (grand===Infinity) ? '∞' : (grand/140000).toFixed(5);
+    }
+
+    function recalc(idx, card, skipSave){
+      const t = tasks[idx];
+      const outChips = card.querySelectorAll('.chip');
+      const res = computeAmount(t.salary, t.multiplier, t.hours);
+      outChips[0].innerHTML = `<b>${fmt(res.amount)}</b><small>Total recebido</small>`;
+      outChips[1].innerHTML = `<b>${fmt(res.hourSalary)}</b><small>Salário da última hora</small>`;
+
+      // also show extras below
+      let extraRow = card.querySelector('.extras');
+      if(!extraRow){ extraRow = document.createElement('div'); extraRow.className='extras'; extraRow.style.marginTop='8px'; card.querySelector('.task-left').appendChild(extraRow); }
+      extraRow.innerHTML = `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><div class='chip'><b>${(res.amount===Infinity)?'∞':(res.amount/400).toFixed(2)}</b><small>Cafés (~400)</small></div><div class='chip'><b>${(res.amount===Infinity)?'∞':(res.amount/140000).toFixed(5)}</b><small>Rodadas de boliche (~140.000)</small></div><div class='chip'><b>${fmt(t.salary * t.hours)}</b><small>Valor esperado (sem multiplicador)</small></div></div>`;
+
+      if(!skipSave) save();
+      // update sidebar totals quickly
+      let grand = 0; tasks.forEach(tt=>{ const c = computeAmount(tt.salary, tt.multiplier, tt.hours); if(isFinite(c.amount)) grand += c.amount; else grand = Infinity; });
+      totalAll.innerText = (grand===Infinity) ? '∞' : fmt(grand);
+      totalCoffees.innerText = (grand===Infinity) ? '∞' : (grand/400).toFixed(2);
+      totalBowling.innerText = (grand===Infinity) ? '∞' : (grand/140000).toFixed(5);
+    }
+
+    document.getElementById('addTask').addEventListener('click', ()=>{
+      tasks.push({ name: 'Nova tarefa', salary: 100, multiplier: 0.05, hours: 1 }); save(); render();
+    });
+
+    document.getElementById('clearAll').addEventListener('click', ()=>{ if(confirm('Limpar todas as tarefas?')){ tasks=[]; save(); render(); }});
+    document.getElementById('loadDemo').addEventListener('click', ()=>{
+      tasks.push({name:'Tarefa A', salary:100, multiplier:0.02, hours:8});
+      tasks.push({name:'Tarefa B', salary:200, multiplier:0.05, hours:4});
+      save(); render();
+    });
+
+    document.getElementById('exportJson').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(tasks, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='tasks.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    // initial load
+    load(); if(tasks.length===0) render(); else render();
+  </script>
+</body>
+</html>
+
